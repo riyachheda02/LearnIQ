@@ -1,0 +1,242 @@
+// //src/login.jsx
+// import React, { useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { signInWithEmailAndPassword } from "firebase/auth";
+// import { auth, signInWithGoogle, db } from "./firebase";
+// import { onAuthStateChanged } from "firebase/auth";
+// import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+// import lightLogo from "./assets/ff_light_logo.png";
+
+// export default function Login() {
+//   const navigate = useNavigate();
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+
+//   useEffect(() => {
+//     const unsub = onAuthStateChanged(auth, (u) => {
+//       if (u) navigate("/DashBoard");
+//     });
+//     return () => unsub();
+//   }, [navigate]);
+
+//   const handleLogin = async (e) => {
+//     e.preventDefault();
+//     try {
+//       await signInWithEmailAndPassword(auth, email, password);
+//       navigate("/DashBoard");
+//     } catch (err) {
+//       alert("Login Failed: " + err.message);
+//     }
+//   };
+
+//   const handleGoogleLogin = async () => {
+//     try {
+//       const result = await signInWithGoogle();
+//       const user = result.user;
+//       // Create user doc if not exists
+//       const userRef = doc(db, "users", user.uid);
+//       const snap = await getDoc(userRef);
+//       if (!snap.exists()) {
+//         await setDoc(userRef, {
+//           uid: user.uid,
+//           username: user.displayName || user.email.split("@")[0],
+//           email: user.email,
+//           createdAt: serverTimestamp(),
+//           createdServers: [],
+//           joinedServers: [],
+//         });
+//       }
+//       navigate("/DashBoard");
+//     } catch (err) {
+//       alert("Google Login Failed: " + err.message);
+//     }
+//   };
+
+//   return (
+//     <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 relative overflow-hidden">
+//       {/* Decorative circles */}
+//       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-white opacity-10 rounded-full blur-3xl"></div>
+//       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-black opacity-10 rounded-full blur-3xl"></div>
+
+//       <div className="bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md z-10 border border-white/50">
+//         <div className="flex justify-center mb-6">
+//           <img src={lightLogo} alt="Focus Forge" className="h-16 object-contain" />
+//         </div>
+//         <h2 className="text-3xl font-bold text-center mb-2 text-gray-800">Welcome Back</h2>
+//         <p className="text-center text-gray-500 mb-6">Sign in to continue your journey</p>
+
+//         {/* <form onSubmit={handleLogin} className="flex flex-col space-y-4">
+//           <input
+//             type="email"
+//             placeholder="Email"
+//             className="p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+//             value={email}
+//             onChange={(e) => setEmail(e.target.value)}
+//           />
+
+//           <input
+//             type="password"
+//             placeholder="Password"
+//             className="p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+//             value={password}
+//             onChange={(e) => setPassword(e.target.value)}
+//           />
+
+//           <button
+//             type="submit"
+//             className="bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-lg transform active:scale-95"
+//           >
+//             Sign In
+//           </button>
+//         </form>
+
+//         <div className="my-6 flex items-center">
+//           <div className="flex-grow border-t border-gray-300"></div>
+//           <span className="mx-4 text-gray-500 text-sm">OR</span>
+//           <div className="flex-grow border-t border-gray-300"></div>
+//         </div> */}
+
+//         <button
+//           onClick={handleGoogleLogin}
+//           className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition shadow-sm"
+//         >
+//           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
+//           Sign in with Google
+//         </button>
+
+//         <p className="text-center mt-6 text-gray-600">
+//           Don’t have an account?{" "}
+//           <span
+//             onClick={() => navigate("/register")}
+//             className="text-indigo-600 font-bold cursor-pointer hover:underline"
+//           >
+//             Register
+//           </span>
+//         </p>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+//src/login.jsx
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, signInWithGoogle, db } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import lightLogo from "./assets/ff_light_logo.png";
+
+export default function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      if (u) navigate("/DashBoard");
+    });
+    return () => unsub();
+  }, [navigate]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/DashBoard");
+    } catch (err) {
+      alert("Login Failed: " + err.message);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithGoogle();
+      const user = result.user;
+      // Create user doc if not exists
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+      if (!snap.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          username: user.displayName || user.email.split("@")[0],
+          email: user.email,
+          createdAt: serverTimestamp(),
+          createdServers: [],
+          joinedServers: [],
+        });
+      }
+      navigate("/DashBoard");
+    } catch (err) {
+      alert("Google Login Failed: " + err.message);
+    }
+  };
+
+  return (
+    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 relative overflow-hidden">
+      {/* Decorative circles */}
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-white opacity-10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-black opacity-10 rounded-full blur-3xl"></div>
+
+      <div className="bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md z-10 border border-white/50">
+        <div className="flex justify-center mb-6">
+          <img src={lightLogo} alt="Focus Forge" className="h-16 object-contain" />
+        </div>
+        <h2 className="text-3xl font-bold text-center mb-2 text-gray-800">Welcome Back</h2>
+        <p className="text-center text-gray-500 mb-6">Sign in to continue your journey</p>
+
+        {/* <form onSubmit={handleLogin} className="flex flex-col space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            className="p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            className="p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button
+            type="submit"
+            className="bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-lg transform active:scale-95"
+          >
+            Sign In
+          </button>
+        </form>
+
+        <div className="my-6 flex items-center">
+          <div className="flex-grow border-t border-gray-300"></div>
+          <span className="mx-4 text-gray-500 text-sm">OR</span>
+          <div className="flex-grow border-t border-gray-300"></div>
+        </div> */}
+
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition shadow-sm"
+        >
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
+          Sign in with Google
+        </button>
+
+        <p className="text-center mt-6 text-gray-600">
+          Don’t have an account?{" "}
+          <span
+            onClick={() => navigate("/register")}
+            className="text-indigo-600 font-bold cursor-pointer hover:underline"
+          >
+            Register
+          </span>
+        </p>
+      </div>
+    </div>
+  );
+}
